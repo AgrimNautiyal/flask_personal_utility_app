@@ -76,22 +76,22 @@
 					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sit amet pharetra nisl. Vestibulum sollicitudin leo non purus vestibulum placerat. Curabitur ac erat sollicitudin, blandit quam vitae.</p>
 				</div>
 			</div>
-			<form class="contact-form" action = '/signup_verify'>
+			<form class="contact-form" action = '/signup_verify' method="POST">
 				<div class="row">
 					<div class="col-md-6">
-						<input type="text" placeholder="Name">
+						<input type="text" placeholder="Name" name = "Name">
 					</div>
 					<div class="col-md-6">
-						<input type="email" placeholder="E-mail">
+						<input type="email" placeholder="E-mail" name = "Email">
 					</div>
 					<div class="col-md-6">
-						<input type="password" placeholder="Password">
+						<input type="password" placeholder="Password" name = "Password">
 					</div>
 					<div class="col-md-6">
-						<input type="password" placeholder="Confirm Password">
+						<input type="password" placeholder="Confirm Password" name = "ConfPassword">
 					</div>
 					<div class="col-md-12">
-						<textarea placeholder="Tell us a litte about yourself! (Description will be public)"></textarea>
+						<textarea placeholder="Tell us a litte about yourself! (Description will be public)" name = "Desc"></textarea>
 					</div>
 				</div>
 				<div class="text-center">

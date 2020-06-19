@@ -1,0 +1,8 @@
+schemas ::
+
+
+table1 #for auth purposes
+EnrolledUsers(useremail, userPassword, userName, userDescription)
+
+table2 #for ops purposes
+IndividualUser(emailUser,connName, connEmail, connOccasion, connInterval, connDescription, connAlertText)

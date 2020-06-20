@@ -2,7 +2,7 @@
 ------------------------------------
   Riddle - Portfolio
   Version: 1.0
- ------------------------------------ 
+ ------------------------------------
  ====================================*/
 
 /*----------------------------------------*/
@@ -303,6 +303,12 @@ ol {
 .circle-progress {
   text-align: center;
   position: relative;
+}
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
 }
 
 .circle-progress canvas {

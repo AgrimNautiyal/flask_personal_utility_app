@@ -37,6 +37,7 @@
 				</div>
 				<div class="col-lg-8 col-md-9">
 					<a href="/logout" class="site-btn header-btn">Logout</a>
+          <a href="/dashboard" class="site-btn header-btn">Back</a>
 					<nav class="main-menu">
 						<ul>
 							<li><a href="/dashboard">Dashboard</a></li>
@@ -58,7 +59,7 @@
 		<div class="container text-center">
 			<div class="row">
 				<div class="col-xl-10 offset-xl-1">
-					<h2 class="section-title">Hi there, <span>{{name}}.</span></h2>
+					<h2 class="section-title">Tell us <span>More.</span> </h2>
 				</div>
 			</div>
 		</div>
@@ -71,20 +72,41 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-6 offset-lg-3 contect-tect">
-					<h2>Time to prompt you.</h2>
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sit amet pharetra nisl. Vestibulum sollicitudin leo non purus vestibulum placerat. Curabitur ac erat sollicitudin, blandit quam vitae.</p>
+					<h2>Hey {{name}}!</h2>
+					<p>We're excited to add this person to your list of important people in your life. In order to do that, we need to know a bit more. Please fill the form to the best of your knowledge and we'll ensure you never forget about this person again!</p>
 				</div>
 			</div>
-
+			<form class="contact-form" action = '/addContact' method="POST">
+				<div class="row">
+					<div class="col-md-6">
+						<input type="text" placeholder="Name" name = "Name">
+					</div>
+					<div class="col-md-6">
+						<input type="email" placeholder="E-mail" name = "Email">
+					</div>
+					<div class="col-md-6">
+						<input type="text" placeholder="Phone" name = "Phone">
+					</div>
+					<div class="col-md-6">
+						<input type="text" placeholder="Occasion for reminding" name = "Occasion">
+					</div>
+					<div class="col-md-6">
+						<input type="text" placeholder="Interval between communication in days" name = "Interval">
+					</div>
+					<div class="col-md-6">
+						<input type="text" placeholder="What should we text you with to remind you?" name = "AlertText">
+					</div>
+					<div class="col-md-12">
+						<textarea placeholder="Tell us a litte about this person. How do you know them? (This is only for your reference, so you can keep this as subjective as you want.)" name = "Desc"></textarea>
+					</div>
+				</div>
+				<div class="text-center">
+					<button class="site-btn">Add</button>
+				</div>
+			</form>
 		</div>
 	</section>
 	<!-- page section end -->
-
-  <div style = "text-align:center;" class="container">
-    <a href= '/askContactDetails'><img src ="{{ url_for('static',filename='img/add_circle_outline-24px.svg') }}" height=75 width=75 class ="center"/></a>
-    </div>
-
-
 
 	<!-- footer section start -->
 	<footer class="footer-section text-center">

@@ -144,6 +144,24 @@ def dashboard():
     print(current_user)
     return render_template('dashboard.html', name =current_user.name)
 
+
+@app.route('/askContactDetails')
+@login_required
+def askContactDetails():
+    #this function deals with displaying the form to ask for contact details
+    return render_template('askcontactdetails.html', name = current_user.name.split()[0])
+@app.route('/addContact')
+@login_required
+def addContact():
+    pass
+
+
+@app.route('/myinfo')
+@login_required
+def myinfo():
+    #this function deals with displaying the profile Information of our current user
+    pass
+
 #LOGOUT ROUTES
 @app.route('/logout')
 #@login_required

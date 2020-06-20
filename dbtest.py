@@ -14,9 +14,8 @@ import sqlite3
 
 with sqlite3.connect('users.db') as con:
     cur=con.cursor()
-    cur.execute('SELECT*FROM EnrolledUsers')
-    rows=cur.fetchall()
-    for row in rows:
-        print(row)
+    cur.execute('SELECT id FROM EnrolledUsers')
+    rows=cur.fetchall()[0][0]
+    print(rows)
 
 

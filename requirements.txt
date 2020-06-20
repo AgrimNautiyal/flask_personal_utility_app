@@ -41,7 +41,6 @@ Flask-SQLAlchemy==2.4.0
 Flask-WTF==0.14.2
 ftfy==4.4.3
 gast==0.2.0
-gmpy2==2.1.0b1
 grpcio==1.12.1
 gunicorn==19.9.0
 h5py==2.7.1

@@ -174,13 +174,13 @@ def addNote():
         cur = con.cursor()
         cur.execute('''INSERT INTO EnrolledUsersNotes(id, notes) VALUES (?,?)''',(userID, note_text))
         con.commit()
-    
+
     return redirect(url_for('dashboard'))
 @app.route('/myinfo')
 @login_required
 def myinfo():
     #this function deals with displaying the profile Information of our current user
-    pass
+    return render_template('myinfo.html', name=current_user.name.split()[0])
 
 #LOGOUT ROUTES
 @app.route('/logout')

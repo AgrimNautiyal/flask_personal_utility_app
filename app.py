@@ -150,10 +150,23 @@ def dashboard():
 def askContactDetails():
     #this function deals with displaying the form to ask for contact details
     return render_template('askcontactdetails.html', name = current_user.name.split()[0])
-@app.route('/addContact')
+@app.route('/addContact', methods=['POST'])
 @login_required
 def addContact():
-    pass
+    Name = request.form['Name']
+    Email = request.form['Email']
+    Phone = request.form['Phone']
+    Occasion = request.form['Occasion']
+    Interval = request.form['Interval']
+    AlertText = request.form['AlertText']
+    ContactDesc = request.form['ContactDesc']
+    userID = current_user.id
+    #now to add the above fields in the UserContacts db
+    with sqlite3.connect('users.db') as con:
+        cur = con.cursor()
+        cur.execute('''INSERT INTO UserContacts(userID, conEmail, conName, conOccasion, conInterval,conPhone, conDescription, conAlertText) VALUES(?,?,?,?,?,?,?,?)''', (userID, Email, Name,Occasion,Interval,Phone, ContactDesc, AlertText))
+        con.commit()
+    return redirect(url_for('askContactDetails'))
 
 
 @app.route('/myinfo')

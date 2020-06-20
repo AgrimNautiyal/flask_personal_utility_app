@@ -142,7 +142,7 @@ def login_verify():
 def dashboard():
     print("I am in dashboard")
     print(current_user)
-    return render_template('dashboard.html')
+    return render_template('dashboard.html', name =current_user.name)
 
 #LOGOUT ROUTES
 @app.route('/logout')

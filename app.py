@@ -1,13 +1,10 @@
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, render_template, request, jsonify, flash, redirect, url_for
-from wtforms import Form, TextAreaField, validators
 from dotenv import load_dotenv
 from datetime import datetime
-from flask import g
 import requests
 import sqlite3
-import json
 
 
 app = Flask(__name__)
@@ -168,7 +165,17 @@ def addContact():
         con.commit()
     return redirect(url_for('askContactDetails'))
 
-
+@app.route('/addNote',methods=['POST'])
+@login_required
+def addNote():
+    note_text = request.form['Note']
+    userID = current_user.id
+    with sqlite3.connect('users.db') as con:
+        cur = con.cursor()
+        cur.execute('''INSERT INTO EnrolledUsersNotes(id, notes) VALUES (?,?)''',(userID, note_text))
+        con.commit()
+    
+    return redirect(url_for('dashboard'))
 @app.route('/myinfo')
 @login_required
 def myinfo():

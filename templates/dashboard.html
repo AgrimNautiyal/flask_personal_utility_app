@@ -72,17 +72,33 @@
 			<div class="row">
 				<div class="col-lg-6 offset-lg-3 contect-tect">
 					<h2>Time to prompt you.</h2>
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sit amet pharetra nisl. Vestibulum sollicitudin leo non purus vestibulum placerat. Curabitur ac erat sollicitudin, blandit quam vitae.</p>
+					<p >Consider this <span> your space.</span> Here you can be yourself and using the add button below, add the people who are most important to you and whom you'd never want to lose touch with. You can also make notes for yourslef that you can see later. View your profile in the "My Information" section which will contain everything about you.</p>
 				</div>
 			</div>
-
+      <div style = "text-align:center;" class="container">
+        <a href= '/askContactDetails'><img src ="{{ url_for('static',filename='img/add_circle_outline-24px.svg') }}" height=75 width=75 class ="center"/></a>
+        </div>
+        <form class="contact-form" action = '/addNote' method="POST">
+          <div class="col-md-12">
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <textarea placeholder="What's on your mind? (Visible only to you)" name = "Note"></textarea>
+          </div>
+          <div class="text-center">
+  					<button class="site-btn">Add Note</button>
+  				</div>
+        </form>
 		</div>
+
+
 	</section>
 	<!-- page section end -->
 
-  <div style = "text-align:center;" class="container">
-    <a href= '/askContactDetails'><img src ="{{ url_for('static',filename='img/add_circle_outline-24px.svg') }}" height=75 width=75 class ="center"/></a>
-    </div>
+
 
 
 

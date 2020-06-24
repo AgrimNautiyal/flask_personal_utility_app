@@ -11,6 +11,9 @@
 
 	<!-- Google Fonts -->
 	<link href="https://fonts.googleapis.com/css?family=Josefin+Sans:400,400i,600,600i,700" rel="stylesheet">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
 	<!-- Stylesheets -->
 	<link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap.min.css') }}"/>
@@ -18,14 +21,33 @@
 	<link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}"/>
 
 
-	<!--[if lt IE 9]>
-	  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-	  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-	<![endif]-->
+	<!-- JS for autoclosing of flash messages-->
+	<script>
+	window.setTimeout(function() {
+	$(".alert").fadeTo(500, 0).slideUp(500, function(){
+			$(this).remove();
+	});
+}, 4000);
+	</script>
 
 </head>
 <body>
+	{% with messages = get_flashed_messages(with_categories=true) %}
+	    {% if messages %}
+	        {% for category, message in messages %}
+	            <!-- Do something with the message -->
 
+			<div class="alert alert-{{category}} alert-dismissible fade show in" role="alert" style="text-align:center">
+  <strong style = "font-size:30px">{{message}}</strong>
+
+  <button type="button" class="close btn-lg" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+	        {% endfor %}
+	    {% endif %}
+	{% endwith %}
 	<!-- header section start -->
 	<header class="header-section">
 		<div class="container">
@@ -76,28 +98,28 @@
 					<p>We're excited to add this person to your list of important people in your life. In order to do that, we need to know a bit more. Please fill the form to the best of your knowledge and we'll ensure you never forget about this person again!</p>
 				</div>
 			</div>
-			<form class="contact-form" action = '/addContact' method="POST">
+			<form class="contact-form" action = '/addContact' method="POST" autocomplete="on">
 				<div class="row">
 					<div class="col-md-6">
-						<input type="text" placeholder="Name" name = "Name">
+						<input type="text" placeholder="Name" name = "Name" required>
 					</div>
 					<div class="col-md-6">
-						<input type="email" placeholder="E-mail" name = "Email">
+						<input type="email" placeholder="E-mail" name = "Email" required>
 					</div>
 					<div class="col-md-6">
-						<input type="text" placeholder="Phone" name = "Phone">
+						<input type="text" placeholder="Phone" name = "Phone" required>
 					</div>
 					<div class="col-md-6">
-						<input type="text" placeholder="Occasion for reminding" name = "Occasion">
+						<input type="text" placeholder="Occasion for reminding" name = "Occasion" required>
 					</div>
 					<div class="col-md-6">
-						<input type="text" placeholder="Interval between communication in days" name = "Interval">
+						<input type="number" placeholder="Interval between communication in days (Minimum 1 Day, Maximum 365 days)" name = "Interval" min="1" max="365" required>
 					</div>
 					<div class="col-md-6">
-						<input type="text" placeholder="What should we text you with to remind you?" name = "AlertText">
+						<input type="text" placeholder="What should we text you with to remind you?" name = "AlertText" required>
 					</div>
 					<div class="col-md-12">
-						<textarea placeholder="Tell us a litte about this person. How do you know them? (This is only for your reference, so you can keep this as subjective as you want.)" name = "ContactDesc"></textarea>
+						<textarea placeholder="Tell us a litte about this person. How do you know them? (This is only for your reference, so you can keep this as subjective as you want.)" name = "ContactDesc" required></textarea>
 					</div>
 				</div>
 				<div class="text-center">

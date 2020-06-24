@@ -73,25 +73,26 @@
 			<div class="row">
 				<div class="col-lg-6 offset-lg-3 contect-tect">
 					<h2>Hi there!</h2>
+					<h2 style="color:red">{{Prompt_For_Signup}}</h2>
 					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sit amet pharetra nisl. Vestibulum sollicitudin leo non purus vestibulum placerat. Curabitur ac erat sollicitudin, blandit quam vitae.</p>
 				</div>
 			</div>
-			<form class="contact-form" action = '/signup_verify' method="POST">
+			<form class="contact-form" action = '/signup_verify' method="POST" autocomplete="on">
 				<div class="row">
 					<div class="col-md-6">
-						<input type="text" placeholder="Name" name = "Name">
+						<input type="text" placeholder="Name" name = "Name" required>
 					</div>
 					<div class="col-md-6">
-						<input type="email" placeholder="E-mail" name = "Email">
+						<input type="email" placeholder="E-mail" name = "Email" required>
 					</div>
 					<div class="col-md-6">
-						<input type="password" placeholder="Password" name = "Password">
+						<input type="password" placeholder="Password" name = "Password" required>
 					</div>
 					<div class="col-md-6">
-						<input type="password" placeholder="Confirm Password" name = "ConfPassword">
+						<input type="password" placeholder="Confirm Password" name = "ConfPassword" required>
 					</div>
 					<div class="col-md-12">
-						<textarea placeholder="Tell us a litte about yourself! (Description will be public)" name = "Desc"></textarea>
+						<textarea placeholder="Tell us a litte about yourself! (Description will be public)" name = "Desc" required></textarea>
 					</div>
 				</div>
 				<div class="text-center">

@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from datetime import datetime
 import requests
 import sqlite3
+import re
 
 
 app = Flask(__name__)
@@ -37,7 +38,12 @@ def signup_verify():
     ConfPass = request.form['ConfPassword']
     if Pass != ConfPass:
         #non matching passwords ---> need to add in a prompt on webpage
-        return redirect(url_for('signup'))
+        error = "Your passwords Do Not match. Please try again."
+        return render_template('signup.html', Prompt_For_Signup=error)
+    regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+    if not re.search(regex,Email):
+        error = "You have entered an invalid Email Address. Please try again."
+        return render_template('signup.html', Prompt_For_Signup=error)
     hashedPassword = generate_password_hash(Pass, method='sha256')
     Desc = request.form['Desc']
     #now to add values into the database
@@ -98,14 +104,24 @@ def login_verify():
     print("Entering login_verify route")
     Email = request.form['Email']
     Password = request.form['Password']
+    if not Email or not Password:
+        #redirect back to login and do not leave empty fields
+        error = "You cannot leave any field empty. Please try again."
+        return render_template('login.html', Prompt_For_Login=error)
+
+    #to check if email is valid or not : (using regex validation)
+    regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+    if not re.search(regex,Email):
+        error = "You have entered an invalid Email Address. Please try again."
+        return render_template('login.html', Prompt_For_Login=error)
     #to check if email exists in our records
     with sqlite3.connect('users.db') as con:
         cur=con.cursor()
         cur.execute('SELECT userEmail FROM EnrolledUsers where userEmail=?', (Email,))
         rows=cur.fetchall()
         if rows==[]: #failed case
-            print("Try  logging in once again!")
-            return redirect(url_for('login'))
+            error = "The Email ID you provided doesn't exist in our database. Please try again."
+            return render_template('login.html', Prompt_For_Login=error)
         else:
             cur.execute('SELECT userPassword FROM EnrolledUsers where userEmail=?', (Email,))
             hashPass = cur.fetchall()[0][0]
@@ -120,10 +136,11 @@ def login_verify():
                 print("All details fetched!")
                 user = User(id, Name, Email, hashPass,Desc)
                 login_user(user)
-                print("User is being logged in!")
-                print("I am going to dashboard")
-                print(vars(current_user))
+                flash('You have successfully logged in!', 'success')
                 return redirect(url_for('dashboard'))
+            else:
+                flash('Wrong password!', 'danger')
+                return redirect(url_for('login'))
 
     f="Login Failed. Please try again!"
 
@@ -158,23 +175,46 @@ def addContact():
     AlertText = request.form['AlertText']
     ContactDesc = request.form['ContactDesc']
     userID = current_user.id
+    #let's set our basic validations
+    regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+    if not re.search(regex,Email):
+        error = "You have entered an invalid Email Address. Please try again."
+        return render_template('askcontactdetails.html', Prompt_For_AddingContact=error)
+    regex2 = "^(0/91)?[7-9][0-9]{9}$"
+    if not re.search(regex2, Phone):
+        flash("You have entered an invalid Phone Number. Please try again.", 'danger')
+        return redirect(url_for('askContactDetails'))
+    try:
+        s=int(Interval)
+        if s < 1 or s > 365:
+            flash('Please keep your interval between 1 day and 365 days and try again!', 'danger')
+            return redirect(url_for('askContactDetails'))
+    except:
+        flash('You seem to have entered an invalid interval of days. Please try again!')
+        return redirect(url_for('askContactDetails'))
+
+
     #now to add the above fields in the UserContacts db
     with sqlite3.connect('users.db') as con:
         cur = con.cursor()
         cur.execute('''INSERT INTO UserContacts(userID, conEmail, conName, conOccasion, conInterval,conPhone, conDescription, conAlertText) VALUES(?,?,?,?,?,?,?,?)''', (userID, Email, Name,Occasion,Interval,Phone, ContactDesc, AlertText))
         con.commit()
+    flash('We have added your contact!', 'success')
     return redirect(url_for('askContactDetails'))
 
 @app.route('/addNote',methods=['POST'])
 @login_required
 def addNote():
-    note_text = request.form['Note']
-    userID = current_user.id
-    with sqlite3.connect('users.db') as con:
-        cur = con.cursor()
-        cur.execute('''INSERT INTO EnrolledUsersNotes(id, notes) VALUES (?,?)''',(userID, note_text))
-        con.commit()
-
+    try:
+        note_text = request.form['Note']
+        userID = current_user.id
+        with sqlite3.connect('users.db') as con:
+            cur = con.cursor()
+            cur.execute('''INSERT INTO EnrolledUsersNotes(id, notes) VALUES (?,?)''',(userID, note_text))
+            con.commit()
+        flash('Your Note was successfully added!', 'success')
+    except:
+        flash('Your Note was not added :( ', 'danger')
     return redirect(url_for('dashboard'))
 @app.route('/myinfo')
 @login_required

@@ -11,6 +11,9 @@
 
 	<!-- Google Fonts -->
 	<link href="https://fonts.googleapis.com/css?family=Josefin+Sans:400,400i,600,600i,700" rel="stylesheet">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
 	<!-- Stylesheets -->
 	<link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap.min.css') }}"/>
@@ -18,11 +21,32 @@
 	<link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}"/>
 
 
-
+	<script>
+	window.setTimeout(function() {
+	$(".alert").fadeTo(500, 0).slideUp(500, function(){
+			$(this).remove();
+	});
+}, 4000);
+	</script>
 
 </head>
 <body>
+	{% with messages = get_flashed_messages(with_categories=true) %}
+	    {% if messages %}
+	        {% for category, message in messages %}
+	            <!-- Do something with the message -->
 
+			<div class="alert alert-{{category}} alert-dismissible fade show in" role="alert" style="text-align:center">
+  <strong style = "font-size:30px">{{message}}</strong>
+
+  <button type="button" class="close btn-lg" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+	        {% endfor %}
+	    {% endif %}
+	{% endwith %}
 	<!-- header section start -->
 	<header class="header-section">
 		<div class="container">
@@ -70,17 +94,20 @@
 			<div class="row">
 				<div class="col-lg-6 offset-lg-3 contect-tect">
 					<h2>Hi there!</h2>
-					{{ Prompt_For_Login}}
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sit amet pharetra nisl. Vestibulum sollicitudin leo non purus vestibulum placerat. Curabitur ac erat sollicitudin, blandit quam vitae.</p>
+					<h3 style="color:red">{{ Prompt_For_Login}}</h3>
+					<br />
+					<p>
+						Hey there! If you're a returning user, please login to continue viewing your contacts and be in touch with those who matter the most to you. Note down your thoughts for the day by adding it to your notes in your dashboard and you can visit them whenever you want, visible only to you!</p>
+					</p>
 				</div>
 			</div>
 			<form class="contact-form" action = '/login_verify' method="POST">
 				<div class="row">
 					<div class="col-md-6">
-					<input type="email" placeholder="E-mail" name ="Email">
+					<input type="email" placeholder="E-mail" name ="Email" required>
 					</div>
 					<div class="col-md-6">
-						<input type="password" placeholder="Password" name = "Password">
+						<input type="password" placeholder="Password" name = "Password" required>
 					</div>
 				</div>
 				<div class="text-center">

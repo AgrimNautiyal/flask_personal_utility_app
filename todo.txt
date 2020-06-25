@@ -1,8 +1,0 @@
-1)implement form validation in all required input templates
-2)implement message flashing for wrong login (all kinds of possible reasons for failures)
-3)implement message flashing for successful entry of Contacts for every user
-4)implement message flashing for successful entry of notes for every user
-5)fix responsivity issues
-6)implement My Information functionality (need to modularize all units within this function and discuss)
-7)implement user search and connection functionality
-8)implement messaging between users upon connectivity

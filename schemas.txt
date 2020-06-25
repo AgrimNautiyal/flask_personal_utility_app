@@ -1,8 +1,0 @@
-schemas ::
-
-
-table1 #for auth purposes
-EnrolledUsers(id,userEmail, userPassword, userName, userDescription)
-
-table2 #for ops purposes
-UserContact(userID, contactID, conEmail, conName, conOccasion, conInterval, conDescription, conPhone, conAlertText)

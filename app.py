@@ -46,10 +46,10 @@ def sendMail():
         sg = SendGridAPIClient(str(app.config.get("SENDGRID_API_KEY")))
         response = sg.send(message)
 
-        flash('Your message was sent to the developer successfully!')
+        flash('Your message was sent to the developer successfully!', 'success')
         return redirect(url_for('contact'))
     except:
-        flash('Our service seems to be down for now. Please retry in a short while!')
+        flash('Our service seems to be down for now. Please retry in a short while!', 'danger')
         return redirect(url_for('contact'))
 
 
@@ -63,6 +63,14 @@ def signup_verify():
     Email = request.form['Email']
     Pass = request.form['Password']
     ConfPass = request.form['ConfPassword']
+    #to check if email exists in our database or not
+    with sqlite3.connect('users.db') as con:
+        cur=con.cursor()
+        cur.execute('''SELECT*FROM EnrolledUsers where userEmail=?''', (Email, ))
+        rows=cur.fetchall()
+        if rows!=[]:
+            flash('User already exists. Please login to continue or register with a different ID.', 'danger')
+            return redirect(url_for('signup'))
     if Pass != ConfPass:
         #non matching passwords
         error = "Your passwords Do Not match. Please try again."
@@ -91,7 +99,7 @@ def signup_verify():
     sg = SendGridAPIClient(str(app.config.get("SENDGRID_API_KEY")))
     response = sg.send(message)
     #mail has been sent to user after signup.
-    
+
     return render_template('login.html', Prompt_For_Login = "Sign up successful! Please login to continue.")
 
 
@@ -224,13 +232,26 @@ def addContact():
     if not re.search(regex2, Phone):
         flash("You have entered an invalid Phone Number. Please try again.", 'danger')
         return redirect(url_for('askContactDetails'))
+
+    #if email or phone already exist, then invalid entry
+    with sqlite3.connect('users.db') as con:
+        cur=con.cursor()
+        cur.execute('''SELECT*FROM UserContacts where conEmail=? ''', (Email, ))
+        rows1=cur.fetchall()
+        cur.execute('''SELECT*FROM UserContacts where conPhone=? ''', (Phone, ))
+        rows2=cur.fetchall()
+
+        if rows1!=[] or rows2!=[]:
+            #this means email or phone already exists
+            flash("Contact already exists! Please add a different contact.", 'danger')
+            return redirect(url_for('askContactDetails'))
     try:
         s=int(Interval)
         if s < 1 or s > 365:
             flash('Please keep your interval between 1 day and 365 days and try again!', 'danger')
             return redirect(url_for('askContactDetails'))
     except:
-        flash('You seem to have entered an invalid interval of days. Please try again!')
+        flash('You seem to have entered an invalid interval of days. Please try again!', 'danger')
         return redirect(url_for('askContactDetails'))
 
 

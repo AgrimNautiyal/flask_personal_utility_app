@@ -1,15 +1,18 @@
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, render_template, request, jsonify, flash, redirect, url_for
+from werkzeug.security import generate_password_hash, check_password_hash
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 from dotenv import load_dotenv
 from datetime import datetime
 import requests
 import sqlite3
 import re
 
-
+load_dotenv('.env')
 app = Flask(__name__)
-app.config['SECRET_KEY'] = "secret"
+app.config.from_pyfile('settings.py')
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
@@ -25,6 +28,30 @@ def about():
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
+@app.route('/sendMailFromContactPage', methods=['POST'])
+def sendMail():
+    try:
+        #main logic for sending mails through API
+        Name = request.form['Name']
+        Email = request.form['Email']
+        Subject = request.form['Subject']
+        Source = request.form['Source']
+        Message = request.form['Message']
+
+        message = Mail(
+        from_email=str(app.config.get("FROM_EMAIL")),
+        to_emails=str(app.config.get("TO_EMAILS")),
+        subject= Subject + '- sent by user - ' + Name,
+        html_content='<strong>Hello developer, you have the following message : </strong><br>'+ Message + "<br><strong> Details of the contact are as follows: </strong><br> Email: " + Email +" Source: " + Source)
+        sg = SendGridAPIClient(str(app.config.get("SENDGRID_API_KEY")))
+        response = sg.send(message)
+
+        flash('Your message was sent to the developer successfully!')
+        return redirect(url_for('contact'))
+    except:
+        flash('Our service seems to be down for now. Please retry in a short while!')
+        return redirect(url_for('contact'))
+
 
 #SIGNUP ROUTES
 @app.route('/signup')
@@ -37,21 +64,34 @@ def signup_verify():
     Pass = request.form['Password']
     ConfPass = request.form['ConfPassword']
     if Pass != ConfPass:
-        #non matching passwords ---> need to add in a prompt on webpage
+        #non matching passwords
         error = "Your passwords Do Not match. Please try again."
         return render_template('signup.html', Prompt_For_Signup=error)
+
     regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
     if not re.search(regex,Email):
         error = "You have entered an invalid Email Address. Please try again."
         return render_template('signup.html', Prompt_For_Signup=error)
+
     hashedPassword = generate_password_hash(Pass, method='sha256')
     Desc = request.form['Desc']
+
     #now to add values into the database
     with sqlite3.connect('users.db') as con:
         cur = con.cursor()
         cur.execute('''INSERT INTO EnrolledUsers(userName, userEmail, userPassword, userDescription) VALUES(?,?,?,?)''', (Name, Email, hashedPassword, Desc))
         con.commit()
 
+    #send a mail as a signup-reciept : will use this part to develop email based signup confirmation later to avoid spam
+    message = Mail(
+    from_email=str(app.config.get("FROM_EMAIL")),
+    to_emails=Email,
+    subject='Welcome to PromptMe!',
+    html_content='Dear '+Name+". It's wonderful to have you on our platform. Here's to hoping for your pleasant stay, and in case of any issues/queries you can always contact the developer through the Contact Page on our website! Cheers :D")
+    sg = SendGridAPIClient(str(app.config.get("SENDGRID_API_KEY")))
+    response = sg.send(message)
+    #mail has been sent to user after signup.
+    
     return render_template('login.html', Prompt_For_Login = "Sign up successful! Please login to continue.")
 
 

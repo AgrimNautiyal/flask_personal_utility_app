@@ -311,7 +311,7 @@ def changepass():
                 #user seems to try to perform a redundant task, so need to invalidate the operation
                 flash('New password should not match with Current password. Please Try Again.', 'danger')
                 return redirect(url_for('settings'))
-            
+
             newhashedPassword = generate_password_hash(New_Password, method='sha256')
             cur.execute('UPDATE EnrolledUsers SET userPassword =? where id=? ', (newhashedPassword, current_user.id,))
             con.commit();
@@ -323,14 +323,40 @@ def changepass():
             return redirect(url_for('changePassword'))
 
 
-@app.route('/changePhone')
-@login_required
-def changePhone():
-    return render_template('user_change_phone_form.html')
+
 @app.route('/changeEmail')
 @login_required
 def changeEmail():
     return render_template('user_change_email_form.html')
+@app.route('/changeemail', methods=['POST'])
+@login_required
+def changeemail():
+        Current_Password = request.form['C_Password']
+        #compare if Current_Password hash exists for the current_user and only if True, then allow for update
+        with sqlite3.connect('users.db') as con:
+            cur=con.cursor()
+            cur.execute('SELECT userPassword FROM EnrolledUsers where id=?', (current_user.id,))
+            hashPass = cur.fetchall()[0][0]
+            if check_password_hash(hashPass, Current_Password):
+                #allow change
+                New_Email = request.form['N_Email']
+
+                if New_Email == current_user.email:
+                    #user seems to try to perform a redundant task, so need to invalidate the operation
+                    flash('New email should not match with current email. Please Try Again.', 'danger')
+                    return redirect(url_for('settings'))
+
+                cur.execute('UPDATE EnrolledUsers SET userEmail =? where id=? ', (New_Email, current_user.id,))
+                con.commit();
+                #we can send mails to user on both previous and current user email informing change of email for securtiy reasons
+                flash('Email changed successfully!', 'success')
+                return redirect(url_for('settings'))
+            else:
+                #user seems to have entered a wrong password : so flash error message and reload current PAGE
+                flash('Please re-enter correct current password.', 'danger')
+                return redirect(url_for('changeEmail'))
+
+
 @app.route('/changeDescription')
 @login_required
 def changeDescription():

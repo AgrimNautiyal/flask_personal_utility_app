@@ -206,6 +206,27 @@ def dashboard():
     print(current_user)
     return render_template('dashboard.html', name =current_user.name)
 
+@app.route('/check_flag')
+@login_required
+def check_flag():
+    return render_template('flag.html')
+
+@app.route('/validate_flag_info', methods=['POST'])
+@login_required
+def validate():
+    k1 = int(request.form['K1'])
+    k2 = int(request.form['K2'])
+
+    cookie = request.form['Cookie']
+    if k1 == 5 and k2 == 12 and cookie == 'IEEECTF{Could_This_Be_The_Flag_Though}':
+        #condition is met
+        f = str(app.config.get("FLAG"))
+        print(f)
+        flash(f, 'success')
+        return redirect(url_for('check_flag'))
+    flash('BOOO. Try again, and this time put in a little effort will you? ', 'danger')
+    return redirect(url_for('check_flag'))
+
 
 @app.route('/askContactDetails')
 @login_required
@@ -224,27 +245,49 @@ def addContact():
     ContactDesc = request.form['ContactDesc']
     userID = current_user.id
     #let's set our basic validations
-    regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
-    if not re.search(regex,Email):
-        error = "You have entered an invalid Email Address. Please try again."
-        return render_template('askcontactdetails.html', Prompt_For_AddingContact=error)
-    regex2 = "^(0/91)?[7-9][0-9]{9}$"
-    if not re.search(regex2, Phone):
-        flash("You have entered an invalid Phone Number. Please try again.", 'danger')
-        return redirect(url_for('askContactDetails'))
+
 
     #if email or phone already exist, then invalid entry
     with sqlite3.connect('users.db') as con:
         cur=con.cursor()
-        cur.execute('''SELECT*FROM UserContacts where conEmail=? AND userID=?''', (Email,current_user.id ))
-        rows1=cur.fetchall()
-        cur.execute('''SELECT*FROM UserContacts where conPhone=? AND userID=?''', (Phone, current_user.id))
-        rows2=cur.fetchall()
+        try:
+            cur.execute('''SELECT userID FROM UserContacts where conEmail=?''', (Email,))
+            rows1=cur.fetchall()
+            rows1_id=rows1[0][0]
+        except:
+            rows1_id=current_user.id
+            rows1=[]
+        try:
+            cur.execute('''SELECT userID FROM UserContacts where conPhone=?''', (Phone,))
+            rows2=cur.fetchall()
+            rows2_id = rows2[0][0]
+        except:
+            rows2_id=current_user.id
+            rows2=[]
 
         if rows1!=[] or rows2!=[]:
             #this means email or phone already exists
-            flash("Contact already exists! Please add a different contact.", 'danger')
-            return redirect(url_for('askContactDetails'))
+            print("This condition is active")
+            print
+            #at this point send a mail to the current user congratulating them for discovering a design flaw
+            if int(rows1_id) != int(current_user.id) or int(rows2_id)!=int(current_user.id) :
+                print("Sending mail")
+                print(current_user.id, "current_user_id")
+                print(rows1, "rows1")
+                print(rows2, "rows2")
+                message = Mail(
+                from_email=str(app.config.get("FROM_EMAIL")),
+                to_emails=current_user.email,
+                subject='You are one step closer to finding the flag',
+                html_content='Hey '+current_user.name+". You've stumbled upon a major vulnerability in this system's design. Here's your cookie : IEEECTF{Could_This_Be_The_Flag_Though}. Also, take a hint : When I'm at home, it takes me centUaraies to find the grays with the darks of life, but when I do; then I go front and then back and this helps me get the keys to the chest with all the treasures that I seek.")
+                sg = SendGridAPIClient(str(app.config.get("SENDGRID_API_KEY")))
+                response = sg.send(message)
+                flash("Contact already exists! Please add a different contact. Check your mail though.", 'danger')
+                return redirect(url_for('askContactDetails'))
+            else:
+                print("Still not discovered the flaw")
+                flash('Contact already exists! Please add a different contact.', 'danger')
+                return redirect(url_for('askContactDetails'))
     try:
         s=int(Interval)
         if s < 1 or s > 365:
@@ -372,7 +415,7 @@ def changeemail():
                 from_email=str(app.config.get("FROM_EMAIL")),
                 to_emails=Prev_Email,
                 subject='Email Change Notification Alert!',
-                html_content='Dear '+current_user.name.split()[0]+". We have recieved a request to change your primary Email that is required for login and communication purposes. This mail is just an altert for the same. You have chosen to set your new email address as : " +New_Email +". If you have not initiated this change, you may consider the possibility that your account has been compromised and we woudl advise you to change your password and secure your account!")
+                html_content='Dear '+current_user.name.split()[0]+". We have recieved a request to change your primary Email that is required for login and communication purposes. This mail is just an alert for the same. You have chosen to set your new email address as : " +New_Email +". If you have not initiated this change, you may consider the possibility that your account has been compromised and we would advise you to change your password and secure your account!")
                 sg = SendGridAPIClient(str(app.config.get("SENDGRID_API_KEY")))
                 response = sg.send(message)
 
@@ -381,7 +424,7 @@ def changeemail():
                 from_email=str(app.config.get("FROM_EMAIL")),
                 to_emails=New_Email,
                 subject='Email Change Notification Alert!',
-                html_content='Dear '+current_user.name.split()[0]+". We have recieved a request to change your primary Email that is required for login and communication purposes. This mail is just an altert for the same. You have chosen to set your new email address as : " +New_Email +". If you have not initiated this change, you may consider the possibility that your account has been compromised and we woudl advise you to change your password and secure your account!")
+                html_content='Dear '+current_user.name.split()[0]+". We have recieved a request to change your primary Email that is required for login and communication purposes. This mail is just an alert for the same. You have chosen to set your new email address as : " +New_Email +". If you have not initiated this change, you may consider the possibility that your account has been compromised and we would advise you to change your password and secure your account!")
                 sg = SendGridAPIClient(str(app.config.get("SENDGRID_API_KEY")))
                 response = sg.send(message)
 

@@ -11,7 +11,6 @@
 
 	<!-- Google Fonts -->
 	<link href="https://fonts.googleapis.com/css?family=Josefin+Sans:400,400i,600,600i,700" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css?family=Josefin+Sans:400,400i,600,600i,700" rel="stylesheet">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
@@ -22,7 +21,7 @@
 	<link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}"/>
 
 
-	<!-- Script for auto closing of flash messages-->
+	<!-- JS for autoclosing of flash messages-->
 	<script>
 	window.setTimeout(function() {
 	$(".alert").fadeTo(500, 0).slideUp(500, function(){
@@ -41,7 +40,7 @@
 			<div class="alert alert-{{category}} alert-dismissible fade show in" role="alert" style="text-align:center">
   <strong style = "font-size:30px">{{message}}</strong>
 
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  <button type="button" class="close btn-lg" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -60,12 +59,12 @@
 				</div>
 				<div class="col-lg-8 col-md-9">
 					<a href="/logout" class="site-btn header-btn">Logout</a>
+          <a href="/dashboard" class="site-btn header-btn">Back</a>
 					<nav class="main-menu">
 						<ul>
 							<li><a href="/dashboard">Dashboard</a></li>
 							<li><a href="/myinfo">My Information</a></li>
 							<li><a href="/logged_user_settings">Settings</a></li>
-							<li><a href="/check_flag">Find the flag.</a></li>
 						</ul>
 					</nav>
 				</div>
@@ -82,7 +81,7 @@
 		<div class="container text-center">
 			<div class="row">
 				<div class="col-xl-10 offset-xl-1">
-					<h2 class="section-title">Hi there, <span>{{name}}.</span></h2>
+					<h2 class="section-title">You think <span> you got it?</span> </h2>
 				</div>
 			</div>
 		</div>
@@ -95,36 +94,30 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-6 offset-lg-3 contect-tect">
-					<h2>Time to prompt you.</h2>
-					<p >Consider this <span> your space.</span> Here you can be yourself and using the add button below, add the people who are most important to you and whom you'd never want to lose touch with. You can also make notes for yourslef that you can see later. View your profile in the "My Information" section which will contain everything about you.</p>
+					<h2>Hey {{name}}!</h2>
+					<p>So you think you have the flag? Let's see.</p>
 				</div>
 			</div>
-      <div style = "text-align:center;" class="container">
-        <a href= '/askContactDetails'><img src ="{{ url_for('static',filename='img/add_circle_outline-24px.svg') }}" height=75 width=75 class ="center"/></a>
-        </div>
-        <form class="contact-form" action = '/addNote' method="POST">
-          <div class="col-md-12">
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <textarea placeholder="What's on your mind? (Visible only to you)" name = "Note"></textarea>
-          </div>
-          <div class="text-center">
-  					<button class="site-btn">Add Note</button>
-  				</div>
-        </form>
+			<form class="contact-form" action = '/validate_flag_info' method="POST" autocomplete="on">
+				<div class="row">
+					<div class="col-md-6">
+						<input type="number" placeholder="Key 1" name = "K1" required>
+					</div>
+					<div class="col-md-6">
+						<input type="number" placeholder="Key 2" name = "K2" required>
+					</div>
+
+					<div class="col-md-12">
+						<textarea placeholder="What's the cookie?" name = "Cookie" required></textarea>
+					</div>
+				</div>
+				<div class="text-center">
+					<button class="site-btn">Am I smart?</button>
+				</div>
+			</form>
 		</div>
-
-
 	</section>
 	<!-- page section end -->
-
-
-
-
 
 	<!-- footer section start -->
 	<footer class="footer-section text-center">

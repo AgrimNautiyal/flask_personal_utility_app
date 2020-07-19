@@ -277,11 +277,64 @@ def addNote():
     except:
         flash('Your Note was not added :( ', 'danger')
     return redirect(url_for('dashboard'))
+
 @app.route('/myinfo')
 @login_required
 def myinfo():
     #this function deals with displaying the profile Information of our current user
     return render_template('myinfo.html', name=current_user.name.split()[0])
+
+
+@app.route('/logged_user_settings')
+@login_required
+def settings():
+    return render_template('user_settings.html', name = current_user.name.split()[0])
+
+@app.route('/changePassword')
+@login_required
+def changePassword():
+    return render_template('user_change_password_form.html', name = current_user.name.split()[0])
+
+@app.route('/changepass', methods=['POST'])
+@login_required
+def changepass():
+    Current_Password = request.form['C_Password']
+    #compare if Current_Password hash exists for the current_user and only if True, then allow for new password change to reflect in the database
+    with sqlite3.connect('users.db') as con:
+        cur=con.cursor()
+        cur.execute('SELECT userPassword FROM EnrolledUsers where id=?', (current_user.id,))
+        hashPass = cur.fetchall()[0][0]
+        if check_password_hash(hashPass, Current_Password):
+            #allow change
+            New_Password = request.form['N_Password']
+            if New_Password == Current_Password:
+                #user seems to try to perform a redundant task, so need to invalidate the operation
+                flash('New password should not match with Current password. Please Try Again.', 'danger')
+                return redirect(url_for('settings'))
+            
+            newhashedPassword = generate_password_hash(New_Password, method='sha256')
+            cur.execute('UPDATE EnrolledUsers SET userPassword =? where id=? ', (newhashedPassword, current_user.id,))
+            con.commit();
+            flash('Password changed successfully!', 'success')
+            return redirect(url_for('settings'))
+        else:
+            #user seems to have entered a wrong password : so flash error message and reload current PAGE
+            flash('Please re-enter correct current password.', 'danger')
+            return redirect(url_for('changePassword'))
+
+
+@app.route('/changePhone')
+@login_required
+def changePhone():
+    return render_template('user_change_phone_form.html')
+@app.route('/changeEmail')
+@login_required
+def changeEmail():
+    return render_template('user_change_email_form.html')
+@app.route('/changeDescription')
+@login_required
+def changeDescription():
+    return render_template('user_change_description_form.html')
 
 #LOGOUT ROUTES
 @app.route('/logout')

@@ -18,10 +18,10 @@
 	<!-- Stylesheets -->
 	<link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap.min.css') }}"/>
 	<link rel="stylesheet" href="{{ url_for('static',filename='css/font-awesome.min.css') }}"/>
+	<link rel="stylesheet" href="{{ url_for('static',filename='css/magnific-popup.css') }}"/>
 	<link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}"/>
 
 
-	<!-- JS for autoclosing of flash messages-->
 	<script>
 	window.setTimeout(function() {
 	$(".alert").fadeTo(500, 0).slideUp(500, function(){
@@ -48,6 +48,7 @@
 	        {% endfor %}
 	    {% endif %}
 	{% endwith %}
+
 	<!-- header section start -->
 	<header class="header-section">
 		<div class="container">
@@ -58,13 +59,12 @@
 					</div>
 				</div>
 				<div class="col-lg-8 col-md-9">
-					<a href="/logout" class="site-btn header-btn">Logout</a>
-          <a href="/dashboard" class="site-btn header-btn">Back</a>
+
 					<nav class="main-menu">
 						<ul>
-							<li><a href="/dashboard">Dashboard</a></li>
-							<li><a href="/myinfo">My Information</a></li>
-							<li><a href="/logged_user_settings">Settings</a></li>
+              <li><a href="/dashboard">Dashboard</a></li>
+              <li><a href="/myinfo">My Information</a></li>
+              <li><a href="/logged_user_settings">Settings</a></li>
 						</ul>
 					</nav>
 				</div>
@@ -81,58 +81,31 @@
 		<div class="container text-center">
 			<div class="row">
 				<div class="col-xl-10 offset-xl-1">
-					<h2 class="section-title">Tell us <span>More.</span> </h2>
+					<h2 class="section-title">Hi there, <span>{{name}}.</span></h2>
 				</div>
 			</div>
+
 		</div>
 	</section>
 	<!-- intro section end -->
+  <div class="container text-center">
+    <div class="row">
+      <div class="col-xl-10 offset-xl-1">
+        <h3 >This is where you can make changes with respected to your account</h3><br />
+        	<a href="/changePassword" class="site-btn">Change Password</a>
+          	<a href="/changePhone" class="site-btn">Change Phone</a>
+            	<a href="/changeEmail" class="site-btn">Change Email</a>
+              	<a href="/changeDescription" class="site-btn">Change description</a>
+      </div>
+    </div>
 
-
-	<!-- page section start -->
-	<section class="page-section">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-6 offset-lg-3 contect-tect">
-					<h2>Hey {{name}}!</h2>
-					<p>We're excited to add this person to your list of important people in your life. In order to do that, we need to know a bit more. Please fill the form to the best of your knowledge and we'll ensure you never forget about this person again!</p>
-				</div>
-			</div>
-			<form class="contact-form" action = '/addContact' method="POST" autocomplete="on">
-				<div class="row">
-					<div class="col-md-6">
-						<input type="text" placeholder="Name" name = "Name" required>
-					</div>
-					<div class="col-md-6">
-						<input type="email" placeholder="E-mail" name = "Email" required>
-					</div>
-					<div class="col-md-6">
-						<input type="text" placeholder="Phone" name = "Phone" required>
-					</div>
-					<div class="col-md-6">
-						<input type="text" placeholder="Occasion for reminding" name = "Occasion" required>
-					</div>
-					<div class="col-md-6">
-						<input type="number" placeholder="Interval between communication in days (Minimum 1 Day, Maximum 365 days)" name = "Interval" min="1" max="365" required>
-					</div>
-					<div class="col-md-6">
-						<input type="text" placeholder="What should we text you with to remind you?" name = "AlertText" required>
-					</div>
-					<div class="col-md-12">
-						<textarea placeholder="Tell us a litte about this person. How do you know them? (This is only for your reference, so you can keep this as subjective as you want.)" name = "ContactDesc" required></textarea>
-					</div>
-				</div>
-				<div class="text-center">
-					<button class="site-btn">Add</button>
-				</div>
-			</form>
-		</div>
-	</section>
-	<!-- page section end -->
+  </div>
 
 	<!-- footer section start -->
 	<footer class="footer-section text-center">
 		<div class="container">
+
+			<a href="/dashboard" class="site-btn">Back</a>
 			<div class="social-links">
 				<a href=""><span class="fa fa-pinterest"></span></a>
 				<a href=""><span class="fa fa-linkedin"></span></a>
@@ -144,6 +117,7 @@
 		</div>
 	</footer>
 	<!-- footer section end -->
+
 
 
 	<!--====== Javascripts & Jquery ======-->

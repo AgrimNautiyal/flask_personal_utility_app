@@ -67,16 +67,24 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-6 offset-lg-3 contect-tect">
-					<h2>Here's what we know about you.</h2>
+					<h2>These are your contacts.</h2>
 
 					<br />
 
 					<br />
 					<p>
-					  Name : {{full_name}}<br /><br />
-						Email : {{Email}}<br /><br />
-						About yourself : {{Desc}}<br /><br>
+					 {%for user in users %}
+           {% for element in user %}
+           {% for e in element %}
+           {{e}}<br />
+           {% endfor %}
+           <br /><a href="/delete_contact" class="site-btn">Delete</a>
+           <br /><br /><br />
+           {% endfor %}
+           {% endfor %}
 					</p>
+
+      
 				</div>
 			</div>
 

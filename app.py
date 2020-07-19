@@ -236,9 +236,9 @@ def addContact():
     #if email or phone already exist, then invalid entry
     with sqlite3.connect('users.db') as con:
         cur=con.cursor()
-        cur.execute('''SELECT*FROM UserContacts where conEmail=? ''', (Email, ))
+        cur.execute('''SELECT*FROM UserContacts where conEmail=? AND userID=?''', (Email,current_user.id ))
         rows1=cur.fetchall()
-        cur.execute('''SELECT*FROM UserContacts where conPhone=? ''', (Phone, ))
+        cur.execute('''SELECT*FROM UserContacts where conPhone=? AND userID=?''', (Phone, current_user.id))
         rows2=cur.fetchall()
 
         if rows1!=[] or rows2!=[]:
@@ -278,11 +278,28 @@ def addNote():
         flash('Your Note was not added :( ', 'danger')
     return redirect(url_for('dashboard'))
 
+
 @app.route('/myinfo')
 @login_required
 def myinfo():
     #this function deals with displaying the profile Information of our current user
-    return render_template('myinfo.html', name=current_user.name.split()[0])
+    return render_template('myinfo.html', name=current_user.name.split()[0], full_name = current_user.name, Email = current_user.email, Desc = current_user.desc)
+#route to display user contacts info
+@app.route('/view_contact_info')
+@login_required
+def view_contact_info():
+    users=[]
+    #collect all contact IDs
+    with sqlite3.connect('users.db') as con:
+        cur = con.cursor()
+        cur.execute('''SELECT conName, conEmail, conPhone, conAlertText, conDescription FROM UserContacts where userID=? ''', (current_user.id,))
+        rows = cur.fetchall()
+        tmp=[]
+        for i in rows:
+            tmp.append(i)
+        users.append(tmp)
+    #return render_template('contact_info.html', users= users)
+    return render_template('contact_info.html', users = users, name = current_user.name.split()[0])
 
 
 @app.route('/logged_user_settings')

@@ -279,7 +279,7 @@ def addContact():
                 from_email=str(app.config.get("FROM_EMAIL")),
                 to_emails=current_user.email,
                 subject='You are one step closer to finding the flag',
-                html_content='Hey '+current_user.name+". You've stumbled upon a major vulnerability in this system's design. Here's your cookie : IEEECTF{Could_This_Be_The_Flag_Though}. Also, take a hint : When I'm at home, it takes me centUaraies to find the grays with the darks of life, but when I do; then I go front and then back and this helps me get the keys to the chest with all the treasures that I seek.")
+                html_content='Hey '+current_user.name+". You've stumbled upon a major vulnerability in this system's design. Here's your cookie : IEEECTF{Could_This_Be_The_Flag_Though}. Also, take a hint : When I'm at home, it takes me forever to find the grays with the darks of life, but when I do; I get the keys to the chest with all the treasures that I seek.")
                 sg = SendGridAPIClient(str(app.config.get("SENDGRID_API_KEY")))
                 response = sg.send(message)
                 flash("Contact already exists! Please add a different contact. Check your mail though.", 'danger')

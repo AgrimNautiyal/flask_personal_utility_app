@@ -57,8 +57,9 @@
 					</div>
 				</div>
 				<div class="col-lg-8 col-md-9">
+
 					<a href="/logout" class="site-btn header-btn">Logout</a>
-					<a href="/logged_user_settings" class="site-btn header-btn">Back</a>
+          <a href="/logged_user_settings" class="site-btn header-btn">Back</a>
 					<nav class="main-menu">
 						<ul>
               <li><a href="/dashboard">Dashboard</a></li>
@@ -80,7 +81,7 @@
 		<div class="container text-center">
 			<div class="row">
 				<div class="col-xl-10 offset-xl-1">
-					<h2 class="section-title">We would love to <span>reach</span> out to you.</h2>
+					<h2 class="section-title">Looks like you want to <span>Redefine </span>Yourself.</h2>
 				</div>
 			</div>
 		</div>
@@ -97,22 +98,19 @@
 
 					<br />
 					<p>
-					  Looks like you've moved your work to another address. Here you can update your email adress to streamline our communication with you seamlessly.
+					  You are what your imagination allows you to be. To redefine yourself, you can change your description below by telling us about yourself!
 					</p>
 				</div>
 			</div>
-			<form class="contact-form" action = '/changeemail' method="POST">
+			<form class="contact-form" action = '/changedescription' method="POST">
 				<div class="row">
-          <div class="col-md-6">
-					<input type="password" placeholder="Current Password" name ="C_Password" required>
-					</div>
-					<div class="col-md-6">
-						<input type="email" placeholder="New Email" name = "N_Email" required>
-					</div>
+          <div class="col-md-12">
+            <textarea placeholder="Tell us about yourself!" name = "N_Desc" required></textarea>
+          </div>
 
 				</div>
 				<div class="text-center">
-					<button class="site-btn">Change Email</button>
+					<button class="site-btn">Change Description</button>
 				</div>
 			</form>
 		</div>

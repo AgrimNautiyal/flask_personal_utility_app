@@ -340,7 +340,7 @@ def changeemail():
             if check_password_hash(hashPass, Current_Password):
                 #allow change
                 New_Email = request.form['N_Email']
-
+                Prev_Email = current_user.email
                 if New_Email == current_user.email:
                     #user seems to try to perform a redundant task, so need to invalidate the operation
                     flash('New email should not match with current email. Please Try Again.', 'danger')
@@ -349,8 +349,29 @@ def changeemail():
                 cur.execute('UPDATE EnrolledUsers SET userEmail =? where id=? ', (New_Email, current_user.id,))
                 con.commit();
                 #we can send mails to user on both previous and current user email informing change of email for securtiy reasons
-                flash('Email changed successfully!', 'success')
-                return redirect(url_for('settings'))
+
+                #mail alert to previous email ID
+                message = Mail(
+                from_email=str(app.config.get("FROM_EMAIL")),
+                to_emails=Prev_Email,
+                subject='Email Change Notification Alert!',
+                html_content='Dear '+current_user.name.split()[0]+". We have recieved a request to change your primary Email that is required for login and communication purposes. This mail is just an altert for the same. You have chosen to set your new email address as : " +New_Email +". If you have not initiated this change, you may consider the possibility that your account has been compromised and we woudl advise you to change your password and secure your account!")
+                sg = SendGridAPIClient(str(app.config.get("SENDGRID_API_KEY")))
+                response = sg.send(message)
+
+                #mail alert to new email ID
+                message = Mail(
+                from_email=str(app.config.get("FROM_EMAIL")),
+                to_emails=New_Email,
+                subject='Email Change Notification Alert!',
+                html_content='Dear '+current_user.name.split()[0]+". We have recieved a request to change your primary Email that is required for login and communication purposes. This mail is just an altert for the same. You have chosen to set your new email address as : " +New_Email +". If you have not initiated this change, you may consider the possibility that your account has been compromised and we woudl advise you to change your password and secure your account!")
+                sg = SendGridAPIClient(str(app.config.get("SENDGRID_API_KEY")))
+                response = sg.send(message)
+
+
+                flash('Email changed successfully. Please Login again to continue.', 'success')
+                logout_user()
+                return redirect(url_for('login'))
             else:
                 #user seems to have entered a wrong password : so flash error message and reload current PAGE
                 flash('Please re-enter correct current password.', 'danger')
@@ -360,7 +381,25 @@ def changeemail():
 @app.route('/changeDescription')
 @login_required
 def changeDescription():
-    return render_template('user_change_description_form.html')
+    return render_template('user_change_description_form.html', name = current_user.name.split()[0])
+@app.route('/changedescription', methods=['POST'])
+@login_required
+def changedescription():
+    New_Desc = request.form['N_Desc']
+    Prev_Desc = current_user.desc
+    if New_Desc == current_user.desc:
+        #user seems to try to perform a redundant task, so need to invalidate the operation
+        flash('New Description should not match with current Description. Please Try Again.', 'danger')
+        return redirect(url_for('settings'))
+    with sqlite3.connect('users.db') as con:
+        cur=con.cursor()
+        cur.execute('UPDATE EnrolledUsers SET userDescription =? where id=? ', (New_Desc, current_user.id,))
+        con.commit();
+
+
+    flash('Your description has changed successfully.', 'success')
+    return redirect(url_for('settings'))
+
 
 #LOGOUT ROUTES
 @app.route('/logout')

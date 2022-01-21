@@ -51,7 +51,7 @@ imageio==2.3.0
 importlib-metadata==0.23
 incremental==17.5.0
 ipykernel==4.8.2
-ipython==6.5.0
+ipython==7.16.3
 ipython-genutils==0.2.0
 ipywidgets==7.4.0
 itsdangerous==0.24
